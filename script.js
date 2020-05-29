@@ -32,7 +32,11 @@ var UIController = (function() {
     var DOMstrings = {
         inputText: ".input-text",
         pen: ".write-btn",
-        todolistContainer: ".list-container"
+        todolistContainer: ".list-container",
+        greeting: ".greeting",
+        time: ".time",
+        hoursLeft: ".hours-left",
+
     }
 
 
@@ -48,6 +52,23 @@ var UIController = (function() {
         clearFields: function(input) {
             document.querySelector(input).value = "";
 
+        },
+
+        titleTime: function() {
+            var now, hours, minutes, timeStamp, formatHours, formatMinutes, greeting;
+            // Date the object constructor
+            now = new Date;
+            hours = now.getHours();
+            minutes = now.getMinutes();
+            hours > 12 ? timeStamp = "PM" : timeStamp = "AM";
+            hours > 12 ? greeting = "Good day" : greeting = "Good morning";
+            hours < 10 ? formatHours = "0" + hours : formatHours = hours;
+            minutes < 10 ? formatMinutes = "0" + minutes : formatMinutes = minutes;
+
+
+            document.querySelector(DOMstrings.time).textContent = formatHours + ':' + formatMinutes + " " + timeStamp;
+            document.querySelector(DOMstrings.hoursLeft).textContent = (24 - hours) + " hours";
+            document.querySelector(DOMstrings.greeting).textContent = greeting
         },
         getDomStrings: function() {
             return DOMstrings;
@@ -65,7 +86,6 @@ var controller = (function(dataCtrl, UICtrl) {
     // Add item to the function
     var addItem = function() {
         input = document.querySelector(strings.inputText).value;
-
         if (input.length > 0) {
             // 1. Add an item to the data structure
             newItem = dataCtrl.createItem(input);
@@ -83,7 +103,16 @@ var controller = (function(dataCtrl, UICtrl) {
             addItem();
         }
     })
-    document.querySelector(strings.pen).addEventListener("click", addItem)
+    document.querySelector(strings.pen).addEventListener("click", addItem);
+
+    return {
+        init: function() {
+            UICtrl.titleTime();
+        }
+    }
 
 
 })(dataController, UIController);
+
+// The init function
+controller.init();
