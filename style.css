@@ -1,0 +1,213 @@
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: normal;
+        color: #555;
+    }
+    
+    .container {
+        display: grid;
+        grid-template-rows: 50vh 50vh;
+    }
+    /*=========THE TOP PART============ */
+    
+    .top-part {
+        background-color: hotpink;
+        background-image: url("images/nature-sky-sunset-the-mountains-66997.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        display: grid;
+        grid-template-rows: 30% 50% 20%;
+        justify-items: center;
+    }
+    
+    .navbar {
+        padding-top: 1rem;
+    }
+    
+    .title {
+        text-align: center;
+        align-self: center;
+    }
+    
+    .title h2 {
+        font-weight: normal;
+        color: black;
+        font-size: 2rem;
+    }
+    
+    .input {
+        align-self: center;
+    }
+    
+    .write-btn {
+        background: none;
+        padding: .4rem;
+        border-radius: 50%;
+        border: solid 1px #f4f4f4;
+        cursor: pointer;
+    }
+    
+    .pen {
+        width: 2rem;
+    }
+    
+    .input-form {
+        display: flex;
+        align-items: center;
+    }
+    
+    input {
+        background-color: transparent;
+        border: solid 1px #f4f4f4;
+        /*padding: 0.6rem 5rem;*/
+        /*width: 120%;*/
+        font-size: 1.5rem;
+        padding: 0.4rem 1.5rem;
+        border-radius: 10px;
+        outline: none;
+        margin-right: 1rem;
+    }
+    
+    input::placeholder {
+        font-style: italic;
+        color: #f4f4f4;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+    /* ========THE BOTTOM PART========== */
+    
+    .bottom-part {
+        display: grid;
+        grid-template-rows: 20% auto;
+    }
+    /* ==--THE PROGRESS PART--== */
+    
+    .progress {
+        background-color: #f4f4f4;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+    }
+    
+    .progress-content h2 {
+        text-align: center;
+    }
+    
+    .holder {
+        position: relative;
+        background-color: #fff;
+        width: 20rem;
+        height: 1rem;
+    }
+    
+    .progress-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: #14d5b0ff;
+        width: 60%;
+    }
+    
+    .list {
+        padding: 1rem 2rem;
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+    
+    .list-heading-todo,
+    .list-heading-completed {
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: normal;
+    }
+    
+    .list-heading-todo {
+        color: #f15450f0;
+    }
+    
+    .list-heading-completed {
+        color: #14d5b0ff;
+    }
+    
+    .list-container,
+    .list-container-complete {
+        display: grid;
+        justify-items: center;
+        padding: 1rem 0;
+    }
+    /* ========THE TODO LIST========= */
+    
+    .todolist-item {
+        width: 70%;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 1rem;
+        font-weight: lighter;
+        padding: 0.4rem 0.5rem;
+        transition: all 0.4s;
+    }
+    
+    .todolist-item-text {
+        font-weight: normal;
+    }
+    
+    .todolist-item:hover .delete-btn {
+        display: inline-block;
+    }
+    
+    .todolist-item::after {
+        content: "";
+        left: 0;
+        bottom: 0px;
+        width: 100%;
+        height: 2px;
+        background-color: #f4f4f4;
+        position: absolute;
+    }
+    
+    .delete-btn {
+        border: none;
+        background: transparent;
+        display: none;
+        transition: all 0.4s;
+    }
+    
+    .delete-img {
+        width: 1.7rem;
+        transition: all 0.4s;
+    }
+    
+    .completed-btn {
+        border: none;
+        background-color: transparent;
+    }
+    /* ======COMPLETED LIST========= */
+    
+    .completed-item {
+        width: 70%;
+        background-color: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding: 0.4rem 0.5rem;
+    }
+    
+    .completed-item-text {
+        font-style: italic;
+        text-decoration: line-through;
+        font-weight: lighter;
+    }
+    
+    .remove-img {
+        width: 1.3rem;
+    }
