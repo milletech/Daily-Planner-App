@@ -85,7 +85,7 @@
     
     .bottom-part {
         display: grid;
-        grid-template-rows: 20% auto;
+        grid-template-rows: 25% auto;
     }
     /* ==--THE PROGRESS PART--== */
     
@@ -142,6 +142,7 @@
         display: grid;
         justify-items: center;
         padding: 1rem 0;
+        width: 100%;
     }
     /* ========THE TODO LIST========= */
     
