@@ -35,7 +35,6 @@ var dataController = (function() {
             newItem = new todoItem(input, ID);
             // Push the new item to the database
             data.todolist.push(newItem);
-            console.log(data)
             return newItem;
         },
 
@@ -52,7 +51,7 @@ var dataController = (function() {
             newItem = new completedToDo(input, ID);
             // Push the newitem to the database
             data.completed.push(newItem);
-            console.log(data);
+            //console.log(data);
 
             return newItem;
 
@@ -73,8 +72,22 @@ var dataController = (function() {
                 data.todolist.splice(index, 1);
                 // Remove element in the array at the index of index and remove only 1 element
             }
-            console.log(data);
+            //console.log(id);
         },
+
+        updatePercProgress: function() {
+            var perc;
+
+            if (data.completed.length > 0) {
+                perc = Math.round((data.completed.length / (data.todolist.length + data.completed.length)) * 100);
+            } else {
+                perc = 0;
+            }
+            console.log(perc);
+            return perc;
+
+
+        }
     }
 
 })();
@@ -91,7 +104,12 @@ var UIController = (function() {
         time: ".time",
         hoursLeft: ".hours-left",
         listContainer: ".list-container",
-        compListContainer: ".list-container-complete"
+        compListContainer: ".list-container-complete",
+        // The progress percentage strings
+        progressContent: ".progress-content",
+        percText: ".perctext",
+        progressBar: ".progress-bar",
+        percMessage: ".percMessage"
     }
 
 
@@ -141,6 +159,30 @@ var UIController = (function() {
             el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
         },
+        updateProgress: function(perc) {
+            /* ().textContent = perc + "%";
+             DOMstrings.progressBar.width = perc + "%";*/
+            if (perc >= 0) {
+                document.querySelector(DOMstrings.progressContent).style.display = "block";
+                document.querySelector(DOMstrings.percText).textContent = perc + "%";
+                document.querySelector(DOMstrings.progressBar).style.width = perc + "%";
+
+                if (perc == 0) {
+                    document.querySelector(DOMstrings.percMessage).textContent = "No task completed";
+                } else if (perc > 0 && perc < 50) {
+                    document.querySelector(DOMstrings.progressBar).style.background = "#f15450f0";
+                    document.querySelector(DOMstrings.percMessage).textContent = "You doing well, keep going";
+                } else if (perc >= 50 && perc < 100) {
+                    document.querySelector(DOMstrings.progressBar).style.background = "#14d5b0ff";
+                    document.querySelector(DOMstrings.percMessage).textContent = "You doing well you have completed half of your task";
+                } else if (perc == 100) {
+                    document.querySelector(DOMstrings.percMessage).textContent = "Well done, all tasks completed";
+                }
+            }
+
+            // console.log(perc + "%");
+
+        },
         getDomStrings: function() {
             return DOMstrings;
         }
@@ -166,39 +208,49 @@ var controller = (function(dataCtrl, UICtrl) {
             // 3.Clear the input fields;
             UICtrl.clearFields(strings.inputText);
             // 4. Update the progress percentage
+            percResult = dataCtrl.updatePercProgress();
+            // 5.Update the UI progress percentage
+            UICtrl.updateProgress(percResult);
+
         };
         return newItem;
     };
 
-    var toDoComplete = function() {
-        // 1.Move the item from the todo data structure to the complete data structure
-        // 2.Remove the item from the UI to do list and display it to the completed list
-        // 3. Update the progress percentage
-    };
-
+    //Delete an item
     var ctrlDeleteItem = function(event) {
-        var itemID;
+        var itemID, ID, splitID, percResult;
         itemID = event.target.parentNode.parentNode.parentNode.id;
         // We need to separate the two buttons
+        if (itemID) {
+            splitID = itemID.split("-");
+            ID = parseInt(splitID[1]);
+            if (event.target.parentNode.className === "delete-btn") {
+                // 1.delete an item from the data structure
+                dataCtrl.deleteItem(ID);
+                // 2.delete an item from the User Interface
+                UICtrl.deleteToDoListItem(itemID);
+                // 3.Update the Progress Percentage in the database
+                percResult = dataCtrl.updatePercProgress();
+                // 4.Update the UI progress percentage
+                UICtrl.updateProgress(percResult);
+            } else if (event.target.parentNode.className === "completed-btn") {
+                var newComItem;
+                var maybe = event.target.parentNode.parentNode.parentNode.firstChild.textContent;
+                newComItem = dataCtrl.comItem(maybe);
+                // 1.Create a new item from the one that is in the to do list
+                dataCtrl.deleteItem(ID);
+                // 2.Update User Interface
+                // delete the item from the  to dolist items
+                UICtrl.deleteToDoListItem(itemID);
+                // Display the item to the completed tasks
+                UICtrl.displayComItem(newComItem);
+                // 3.Update the progress bar
+                percResult = dataCtrl.updatePercProgress();
+                // 4.Update the UI progress percentage
+                UICtrl.updateProgress(percResult);
+            }
 
-        if (event.target.parentNode.className === "delete-btn") {
-            // 1.delete an item from the data structure
-            dataCtrl.deleteItem(newItem.id);
-            // 2.delete an item from the User Interface
-            UICtrl.deleteToDoListItem(itemID);
-            // 3.Update the Progress Percentage
-        } else if (event.target.parentNode.className === "completed-btn") {
-            var newComItem;
-            // 1.Create a new item from the one that is in the to do list
-            var maybe = event.target.parentNode.parentNode.parentNode.firstChild.textContent;
-            newComItem = dataCtrl.comItem(maybe);
-            dataCtrl.deleteItem(newItem.id);
-            // 2.Update User Interface
-            // delete the item from the  to dolist items
-            UICtrl.deleteToDoListItem(itemID);
-            // Display the item to the completed tasks
-            UICtrl.displayComItem(newComItem);
-            // 3.Update the progress bar
+
         }
 
     };
@@ -214,6 +266,8 @@ var controller = (function(dataCtrl, UICtrl) {
     return {
         init: function() {
             UICtrl.titleTime();
+            dataCtrl.updatePercProgress();
+            UICtrl.updateProgress();
         }
     }
 

@@ -113,7 +113,16 @@
         left: 0;
         height: 100%;
         background-color: #14d5b0ff;
-        width: 60%;
+        width: 0%;
+        transition: width 0.6s;
+    }
+    
+    .progress-content {
+        display: none;
+    }
+    
+    .percMessage {
+        font-weight: lighter;
     }
     
     .list {
