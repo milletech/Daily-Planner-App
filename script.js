@@ -1,6 +1,5 @@
-// Data Controller Module
-
-
+// Data Controller Module 
+// The modules
 var dataController = (function() {
     // create an item using the constructor function
     var todoItem = function(inputText, id) {
@@ -75,6 +74,25 @@ var dataController = (function() {
             //console.log(id);
         },
 
+        deleteComplItem: function(id) {
+            var ids, index;
+            // Get all the ids, by looping every elemnt in the array and return the each id of it
+            ids = data.completed.map(function(current) {
+                return current.id;
+            });
+            // Search the current id from all of them
+            index = ids.indexOf(id);
+
+            // if the index is found, index will be -1 if the id is not found
+            if (index !== -1) {
+                // remove the item from the data structure
+                data.completed.splice(index, 1);
+                // Remove element in the array at the index of index and remove only 1 element
+            };
+            console.log(data);
+        },
+
+
         updatePercProgress: function() {
             var perc;
 
@@ -85,8 +103,10 @@ var dataController = (function() {
             }
             console.log(perc);
             return perc;
+        },
 
-
+        testing: function() {
+            return data;
         }
     }
 
@@ -97,6 +117,7 @@ var dataController = (function() {
 var UIController = (function() {
 
     var DOMstrings = {
+        // The Percentage
         inputText: ".input-text",
         pen: ".write-btn",
         todolistContainer: ".list-container",
@@ -125,7 +146,7 @@ var UIController = (function() {
         },
         displayComItem: function(obj) {
             var html;
-            html = '<div class="completed-item id="item-%id%""><h2 class="completed-item-text">%input%</h2><div class="remove"><i><img src="images/rect833.png" alt="" class="remove-img"></i></div></div>';
+            html = '<div class="completed-item" id="item-%id%""><h2 class="completed-item-text">%input%</h2><div class="remove"><i><img src="images/rect833.png" alt="" class="remove-img"></i></div></div>';
             newHtml = html.replace("%input%", obj.inputText);
             newHtml = newHtml.replace("%id%", obj.id)
                 // Append the element to the html
@@ -159,6 +180,7 @@ var UIController = (function() {
             el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
         },
+
         updateProgress: function(perc) {
             /* ().textContent = perc + "%";
              DOMstrings.progressBar.width = perc + "%";*/
@@ -171,13 +193,16 @@ var UIController = (function() {
                     document.querySelector(DOMstrings.percMessage).textContent = "No task completed";
                 } else if (perc > 0 && perc < 50) {
                     document.querySelector(DOMstrings.progressBar).style.background = "#f15450f0";
-                    document.querySelector(DOMstrings.percMessage).textContent = "You doing well, keep going";
+                    document.querySelector(DOMstrings.percMessage).textContent = "";
                 } else if (perc >= 50 && perc < 100) {
                     document.querySelector(DOMstrings.progressBar).style.background = "#14d5b0ff";
-                    document.querySelector(DOMstrings.percMessage).textContent = "You doing well you have completed half of your task";
+                    document.querySelector(DOMstrings.percMessage).textContent = "You have completed more than half of your tasks";
                 } else if (perc == 100) {
                     document.querySelector(DOMstrings.percMessage).textContent = "Well done, all tasks completed";
                 }
+            } else {
+                document.querySelector(DOMstrings.progressContent).style.display = "none";
+                document.querySelector(DOMstrings.percMessage).textContent = "No plans for today"
             }
 
             // console.log(perc + "%");
@@ -191,7 +216,6 @@ var UIController = (function() {
 })();
 
 // Controller Module
-
 var controller = (function(dataCtrl, UICtrl) {
     var input, strings, newItem;
     strings = UICtrl.getDomStrings();
@@ -255,19 +279,50 @@ var controller = (function(dataCtrl, UICtrl) {
 
     };
 
+    var reverseItem = function(event) {
+        var itemID, ID, splitID, textInput, newItem, percResult;
+        itemID = event.target.parentNode.parentNode.parentNode.id;
+        textInput = event.target.parentNode.parentNode.parentNode.firstChild.textContent;
+
+        // console.log(textInput);
+
+        if (itemID) {
+            splitID = itemID.split("-");
+            ID = parseInt(splitID[1]);
+            // 1.delete the item from the database
+            dataCtrl.deleteComplItem(ID);
+            // 2.delete the item from the User Interface
+            UICtrl.deleteToDoListItem(itemID);
+            // 3.Create the item for the to do list
+            newItem = dataCtrl.createItem(textInput);
+            // 4.display the item to the User Interface
+            UICtrl.displayItem(newItem);
+            // 5.Update the progress perc
+            percResult = dataCtrl.updatePercProgress();
+            // 6.Update the UI progress percentage
+            UICtrl.updateProgress(percResult);
+        }
+
+    };
+
     document.addEventListener("keypress", function(event) {
         if (event.keyCode === 13) {
             addItem();
         }
     });
+    // Add Item 
     document.querySelector(strings.pen).addEventListener("click", addItem);
+    // delete the item 
     document.querySelector(strings.listContainer).addEventListener("click", ctrlDeleteItem);
+    document.querySelector(strings.compListContainer).addEventListener("click", reverseItem);
 
     return {
         init: function() {
+
             UICtrl.titleTime();
             dataCtrl.updatePercProgress();
             UICtrl.updateProgress();
+            console.log("The application has started");
         }
     }
 
